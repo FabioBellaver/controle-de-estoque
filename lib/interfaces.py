@@ -252,13 +252,13 @@ def interface_historico_movimentacoes(arquivo_itens, arquivo_movimentacoes):
         msg_alerta('Não existem itens cadastrados.')
 
 def interface_relatorio_estoque_minimo(arquivo_itens, arquivo_movimentacoes):
-    estoque = dados_estoque(arquivo_itens, arquivo_movimentacoes)
+    dados = dados_estoque(arquivo_itens, arquivo_movimentacoes)
     qtd_itens = 0
     qtd_itens_sem_estoque = 0
     qtd_itens_reposição = 0
-    estoque.sort(key=lambda item: item['nome'])
+    dados.sort(key=lambda item: item['nome'])
     cabecalho_relatorio_estoque()
-    for item in estoque:
+    for item in dados:
         if item['quantidade'] <= item['estoque_minimo'] + (item['estoque_minimo'] * 20 / 100):
             qtd_itens += 1
             print(f'{item["id_item"]:<10}'
