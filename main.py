@@ -1,7 +1,8 @@
 from lib.arquivos import criar_arquivo_itens, criar_arquivo_movimentacoes, ler_arquivo_itens, ler_arquivo_movimentacoes
 from lib.interfaces import titulo_app, menu_principal, titulo, interface_cadastrar_item, interface_registrar_entrada, \
     interface_registrar_saida, interface_relatorio_estoque, \
-    interface_historico_movimentacoes, interface_relatorio_estoque_minimo, interface_relatorio_por_consumo
+    interface_historico_movimentacoes, interface_relatorio_estoque_minimo, interface_relatorio_por_consumo, \
+    interface_relatorio_movimentacoes
 from lib.uteis import validar_opcao
 
 arquivo_itens = 'arquivos/itens.json'
@@ -16,7 +17,7 @@ titulo_app('Controle de estoque')
 
 while True:
     menu_principal()
-    opcao = validar_opcao(8)
+    opcao = validar_opcao(9)
     if opcao == 1:
         titulo('Cadastrar item')
         interface_cadastrar_item(arquivo_itens)
@@ -39,6 +40,9 @@ while True:
         titulo('Relatório de consumo por setor')
         interface_relatorio_por_consumo(arquivo_itens, arquivo_movimentacoes)
     elif opcao == 8:
+        titulo('Relatório de movimentações')
+        interface_relatorio_movimentacoes(arquivo_itens, arquivo_movimentacoes)
+    elif opcao == 9:
         break
 
 titulo_app('Sistema encerrado')
