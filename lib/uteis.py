@@ -74,3 +74,7 @@ def buscar_id(nome_arquivo, msg):
                     return entrada_id
         if not id_encontrado:
             msg_erro(f'ID {entrada_id} não foi encontrado.')
+
+def formatar_para_real(valor):
+    valor_formatado = f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return valor_formatado

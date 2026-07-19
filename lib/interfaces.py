@@ -1,23 +1,24 @@
 from datetime import datetime
 
+from lib.arquivos import ler_arquivo_itens
 from lib.cores import cores
-from lib.dados import cadastrar_item, registrar_entrada
-from lib.msgs import msg_sucesso
-from lib.uteis import gerar_id, validar_nome_item, validar_opcao, validar_numeros_inteiros, validar_valor, buscar_id
-
+from lib.dados import cadastrar_item, registrar_entrada, registrar_saida, dados_estoque
+from lib.msgs import msg_sucesso, msg_alerta
+from lib.uteis import gerar_id, validar_nome_item, validar_opcao, validar_numeros_inteiros, validar_valor, buscar_id, \
+    formatar_para_real
 
 def titulo_app(txt):
     texto = f'<< {txt.upper()} >>'
-    print(f'{cores["cz"]}~{cores["limpa"]}' * 100)
-    print(f'{cores["am"]}{texto.center(100)}{cores["limpa"]}')
-    print(f'{cores["cz"]}~{cores["limpa"]}' * 100)
+    print(f'{cores["cz"]}~{cores["limpa"]}' * 130)
+    print(f'{cores["am"]}{texto.center(130)}{cores["limpa"]}')
+    print(f'{cores["cz"]}~{cores["limpa"]}' * 130)
 
 def titulo(txt):
-    print(f'{cores["ro"]}{txt.center(100).upper()}{cores["limpa"]}')
-    print(f'{cores["cz"]}~{cores["limpa"]}' * 100)
+    print(f'{cores["am"]}{txt.center(140).upper()}{cores["limpa"]}')
+    print(f'{cores["cz"]}~{cores["limpa"]}' * 130)
 
 def separador():
-    print(f'{cores["cz"]}~{cores["limpa"]}' * 100)
+    print(f'{cores["cz"]}~{cores["limpa"]}' * 130)
 
 def menu_principal():
     titulo('Menu Principal')
@@ -67,19 +68,93 @@ def interface_cadastrar_item(nome_arquivo):
     separador()
 
 def interface_registrar_entrada(arquivo_itens, arquivo_movimentacoes):
-    id_registro = gerar_id()
-    item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
-    tipo = 'ENTRADA'
-    quantidade = validar_numeros_inteiros(f'Digite a quantidade recebida: ')
-    data_entrada = datetime.today().strftime('%d/%m/%Y')
-    dados_registro = {
-        'id': id_registro,
-        'item_id': item_id,
-        'tipo': tipo,
-        'quantidade': quantidade,
-        'data_entrada': data_entrada,
-    }
-    registrar_entrada(arquivo_movimentacoes, dados_registro)
+    itens = ler_arquivo_itens(arquivo_itens)
+    if itens:
+        id_registro = gerar_id()
+        item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
+        tipo = 'ENTRADA'
+        quantidade = validar_numeros_inteiros(f'Digite a quantidade recebida: ')
+        data_entrada = datetime.today().strftime('%d/%m/%Y')
+        dados_entrada = {
+            'id': id_registro,
+            'item_id': item_id,
+            'tipo': tipo,
+            'quantidade': quantidade,
+            'data_entrada': data_entrada,
+        }
+        registrar_entrada(arquivo_movimentacoes, dados_entrada)
+        separador()
+        msg_sucesso(f'Registro ID "{dados_entrada["id"]}" finalizado!')
+        separador()
+    else:
+        msg_alerta('Não existem itens cadastrados. Não é possível registrar uma entrada.')
+
+def interface_registrar_saida(arquivo_itens, arquivo_movimentacoes = ''):
+    itens = ler_arquivo_itens(arquivo_itens)
+    if itens:
+        id_registro = gerar_id()
+        item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
+        tipo = 'SAIDA'
+        quantidade = validar_numeros_inteiros(f'Digite a quantidade entregue: ')
+        setores = ['RECURSOS HUMANOS', 'FINANCEIRO', 'JURIDICO', 'LOGISTICA', 'RECEPCAO', 'SUPORTE TECNICO']
+        menu(setores, 'Selecione o setor requisitante')
+        opcao = validar_opcao(6)
+        setor_requisitante = setores[opcao - 1]
+        data_saida = datetime.today().strftime('%d/%m/%Y')
+        dados_saida = {
+            'id': id_registro,
+            'item_id': item_id,
+            'tipo': tipo,
+            'quantidade': quantidade,
+            'setor_requisitante': setor_requisitante,
+            'data_saida': data_saida
+        }
+        registrar_saida(arquivo_movimentacoes, dados_saida)
+        separador()
+        msg_sucesso(f'Registro ID "{dados_saida["id"]}" finalizado!')
+        separador()
+    else:
+        msg_alerta('Não existem itens cadastrados. Não é possível registrar uma entrada.')
+
+def cabecalho_relatorio_estoque():
+    #cabecalho_tabela(['ID', 'Produto', 'Un', 'Quantidade', 'Preço UN', 'Valor Total', 'Min. Estoque', 'Status'])
+    print(f'{cores["negrito"]}{cores["cz"]}'
+          f'{"ID":<10}'
+          f'{"PRODUTO":<50}'
+          f'{"UMB":<10}'
+          f'{"QTD":<10}'
+          f'{"EST.MIN.":<10}'
+          f'{"PREÇO UN.":<15}'
+          f'{"VALOR TOTAL":<15}'
+          f'{"STATUS":<10}'
+          f'{cores["limpa"]}')
     separador()
-    msg_sucesso(f'Registro {dados_registro["id"]} finalizado!')
+
+def interface_relatorio_estoque(arquivo_itens, arquivo_movimentacoes):
+    relatorio = dados_estoque(arquivo_itens, arquivo_movimentacoes)
+    relatorio.sort(key=lambda item: item['nome'])
+    qtd_itens = len(relatorio)
+    valor_estoque_total = 0
+    cabecalho_relatorio_estoque()
+    for item in relatorio:
+        if item["valor_total"]:
+            valor_estoque_total += item["valor_total"]
+        print(f'{item["id_item"]:<10}'
+              f'{item["nome"]:<50}'
+              f'{item["un_med"]:<10}'
+              f'{item["quantidade"]:<10}'
+              f'{item["estoque_minimo"]:<10}'
+              f'{formatar_para_real(item["preco_un"]):<15}'
+              f'{formatar_para_real(item["valor_total"]):<15}', end='')
+        if item['status'] == 'OK':
+            print(f'{cores["vd"]}{item["status"]:<10}{cores["limpa"]}')
+        elif item['status'] == 'REPOSIÇÃO':
+            print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
+        elif item['status'] == 'ATENÇÃO':
+            print(f'{cores["am"]}{item["status"]:<10}{cores["limpa"]}')
+        elif item['status'] == 'SEM ESTOQUE':
+            print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
+    separador()
+    txt = f'{cores["negrito"]}Quantidade de itens: {cores["limpa"]}{qtd_itens} | {cores["negrito"]}Valor total estoque:{cores["limpa"]} {formatar_para_real(valor_estoque_total)}'
+    print(txt.center(130))
     separador()
