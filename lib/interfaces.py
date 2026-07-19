@@ -251,36 +251,74 @@ def interface_historico_movimentacoes(arquivo_itens, arquivo_movimentacoes):
     else:
         msg_alerta('Não existem itens cadastrados.')
 
+
 def interface_relatorio_estoque_minimo(arquivo_itens, arquivo_movimentacoes):
     dados = dados_estoque(arquivo_itens, arquivo_movimentacoes)
-    qtd_itens = 0
-    qtd_itens_sem_estoque = 0
-    qtd_itens_reposição = 0
-    dados.sort(key=lambda item: item['nome'])
-    cabecalho_relatorio_estoque()
-    for item in dados:
-        if item['quantidade'] <= item['estoque_minimo'] + (item['estoque_minimo'] * 20 / 100):
-            qtd_itens += 1
-            print(f'{item["id_item"]:<10}'
-                  f'{item["nome"]:<50}'
-                  f'{item["un_med"]:<10}'
-                  f'{item["quantidade"]:<10}'
-                  f'{item["estoque_minimo"]:<10}'
-                  f'{formatar_para_real(item["preco_un"]):<15}'
-                  f'{formatar_para_real(item["valor_total"]):<15}', end='')
-            if item['status'] == 'REPOSIÇÃO':
-                qtd_itens_reposição += 1
-                print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
-            elif item['status'] == 'ATENÇÃO':
-                print(f'{cores["am"]}{item["status"]:<10}{cores["limpa"]}')
-            elif item['status'] == 'SEM ESTOQUE':
-                qtd_itens_sem_estoque += 1
-                print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
-    separador()
-    resumo = (
-        f'{cores["negrito"]}Itens listados: {cores["limpa"]}{qtd_itens} | '
-        f'{cores["negrito"]}Sem estoque: {cores["limpa"]}{qtd_itens_sem_estoque} | '
-        f'{cores["negrito"]}Para reposição: {cores["limpa"]}{qtd_itens_reposição} '
-    )
-    print(resumo.center(130))
-    separador()
+    if dados:
+        qtd_itens = 0
+        qtd_itens_sem_estoque = 0
+        qtd_itens_reposição = 0
+        dados.sort(key=lambda item: item['nome'])
+        cabecalho_relatorio_estoque()
+        for item in dados:
+            if item['quantidade'] <= item['estoque_minimo'] + (item['estoque_minimo'] * 20 / 100):
+                qtd_itens += 1
+                print(f'{item["id_item"]:<10}'
+                      f'{item["nome"]:<50}'
+                      f'{item["un_med"]:<10}'
+                      f'{item["quantidade"]:<10}'
+                      f'{item["estoque_minimo"]:<10}'
+                      f'{formatar_para_real(item["preco_un"]):<15}'
+                      f'{formatar_para_real(item["valor_total"]):<15}', end='')
+                if item['status'] == 'REPOSIÇÃO':
+                    qtd_itens_reposição += 1
+                    print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
+                elif item['status'] == 'ATENÇÃO':
+                    print(f'{cores["am"]}{item["status"]:<10}{cores["limpa"]}')
+                elif item['status'] == 'SEM ESTOQUE':
+                    qtd_itens_sem_estoque += 1
+                    print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
+        separador()
+        resumo = (
+            f'{cores["negrito"]}Itens listados: {cores["limpa"]}{qtd_itens} | '
+            f'{cores["negrito"]}Sem estoque: {cores["limpa"]}{qtd_itens_sem_estoque} | '
+            f'{cores["negrito"]}Para reposição: {cores["limpa"]}{qtd_itens_reposição} '
+        )
+        print(resumo.center(130))
+        separador()
+    else:
+        msg_alerta('Não existem itens cadastrados.')
+
+
+def interface_relatorio_por_consumo(nome_arquivo, arquivo_movimentacoes):
+    dados = dados_movimentacoes(nome_arquivo, arquivo_movimentacoes)
+    if dados:
+        setores = ['RECURSOS HUMANOS', 'FINANCEIRO', 'JURIDICO', 'LOGISTICA', 'RECEPCAO', 'SUPORTE TECNICO']
+        menu(setores, 'Selecione o setor requisitante')
+        opcao = validar_opcao(6)
+        setor_relatorio = setores[opcao - 1]
+        total_mov = 0
+        cabecalho_relatorio_movimentacoes()
+        for item in dados:
+            if item['setor_requisitante'] == setor_relatorio:
+                total_mov += 1
+                if item['tipo'] == 'SAIDA':
+                    txt_tipo = f'{item["tipo"]:<10}'
+                    tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
+                    txt_qtd = f'-{item["quantidade"]:<9}'
+                    quantidade = f'{cores["vm"]}{txt_qtd}{cores["limpa"]}'
+                print(f'{item["id_movimento"]:<12}'
+                      f'{tipo}'
+                      f'{item["id_item"]:<12}'
+                      f'{item["nome"]:<40}'
+                      f'{item["un_med"]:<8}'
+                      f'{quantidade}'
+                      f'{item["data"]:<15}'
+                      f'{item["setor_requisitante"]:<20}')
+        separador()
+        resumo = f'{cores["negrito"]}Total de operações: {cores["limpa"]}{total_mov}'
+        print(resumo.center(130))
+        separador
+        print()
+    else:
+        msg_alerta('Não existem movimentações cadastradas.')

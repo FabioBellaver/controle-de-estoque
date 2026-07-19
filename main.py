@@ -1,7 +1,7 @@
 from lib.arquivos import criar_arquivo_itens, criar_arquivo_movimentacoes, ler_arquivo_itens, ler_arquivo_movimentacoes
 from lib.interfaces import titulo_app, menu_principal, titulo, interface_cadastrar_item, interface_registrar_entrada, \
     interface_registrar_saida, interface_relatorio_estoque, \
-    interface_historico_movimentacoes, interface_relatorio_estoque_minimo
+    interface_historico_movimentacoes, interface_relatorio_estoque_minimo, interface_relatorio_por_consumo
 from lib.uteis import validar_opcao
 
 arquivo_itens = 'arquivos/itens.json'
@@ -37,6 +37,7 @@ while True:
         interface_relatorio_estoque_minimo(arquivo_itens, arquivo_movimentacoes)
     elif opcao == 7:
         titulo('Relatório de consumo por setor')
+        interface_relatorio_por_consumo(arquivo_itens, arquivo_movimentacoes)
     elif opcao == 8:
         break
 
