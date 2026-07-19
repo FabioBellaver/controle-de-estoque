@@ -5,7 +5,7 @@ from lib.cores import cores
 from lib.dados import cadastrar_item, registrar_entrada, registrar_saida, dados_estoque, dados_movimentacoes
 from lib.msgs import msg_sucesso, msg_alerta, msg_erro
 from lib.uteis import gerar_id, validar_nome_item, validar_opcao, validar_numeros_inteiros, validar_valor, buscar_id, \
-    formatar_para_real, buscar_qtd_estoque_id
+    formatar_para_real, buscar_qtd_estoque_id, gerar_id_mov
 
 
 def titulo_app(txt):
@@ -90,7 +90,7 @@ def interface_cadastrar_item(nome_arquivo):
 def interface_registrar_entrada(arquivo_itens, arquivo_movimentacoes):
     itens = ler_arquivo_itens(arquivo_itens)
     if itens:
-        id_registro = gerar_id()
+        id_mov = gerar_id_mov(arquivo_itens, arquivo_movimentacoes)
         item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
         tipo = 'ENTRADA'
         while True:
@@ -101,7 +101,7 @@ def interface_registrar_entrada(arquivo_itens, arquivo_movimentacoes):
                 msg_erro('A quantidade deve ser maior que 0.')
         data_entrada = datetime.today().strftime('%d/%m/%Y')
         dados_entrada = {
-            'id': id_registro,
+            'id': id_mov,
             'item_id': item_id,
             'tipo': tipo,
             'quantidade': quantidade,
@@ -118,7 +118,7 @@ def interface_registrar_entrada(arquivo_itens, arquivo_movimentacoes):
 def interface_registrar_saida(arquivo_itens, arquivo_movimentacoes=''):
     itens = ler_arquivo_itens(arquivo_itens)
     if itens:
-        id_registro = gerar_id()
+        id_mov = gerar_id_mov(arquivo_itens, arquivo_movimentacoes)
         item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
         tipo = 'SAIDA'
         qtd_estoque_e_nome = buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, item_id)
@@ -137,7 +137,7 @@ def interface_registrar_saida(arquivo_itens, arquivo_movimentacoes=''):
         setor_requisitante = setores[opcao - 1]
         data_saida = datetime.today().strftime('%d/%m/%Y')
         dados_saida = {
-            'id': id_registro,
+            'id': id_mov,
             'item_id': item_id,
             'tipo': tipo,
             'quantidade': quantidade,

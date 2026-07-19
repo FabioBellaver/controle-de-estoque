@@ -1,7 +1,7 @@
 from nanoid import generate
 
-from lib.arquivos import ler_arquivo_itens
-from lib.dados import dados_estoque
+from lib.arquivos import ler_arquivo_itens, ler_arquivo_movimentacoes
+from lib.dados import dados_estoque, dados_movimentacoes
 from lib.msgs import msg_erro, msg_sucesso
 
 
@@ -24,6 +24,20 @@ def gerar_id():
     alfabeto = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     id_transacao = generate(alfabeto, 8)
     return id_transacao
+
+
+def gerar_id_mov(arquivo_itens, arquivo_movimentacoes):
+    dados = dados_movimentacoes(arquivo_itens, arquivo_movimentacoes)
+
+    if not dados:
+        return "MOV00001"
+
+    ultimo = max(
+        int(item["id_movimento"].replace("MOV", ""))
+        for item in dados
+    )
+
+    return f"MOV{ultimo + 1:05d}"
 
 
 def validar_nome_item(txt):
