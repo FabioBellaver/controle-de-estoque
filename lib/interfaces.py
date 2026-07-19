@@ -154,11 +154,14 @@ def interface_relatorio_estoque(arquivo_itens, arquivo_movimentacoes):
         relatorio = dados_estoque(arquivo_itens, arquivo_movimentacoes)
         relatorio.sort(key=lambda item: item['nome'])
         qtd_itens = len(relatorio)
+        itens_sem_estoque = 0
         valor_estoque_total = 0
         cabecalho_relatorio_estoque()
         for item in relatorio:
             if item["valor_total"]:
                 valor_estoque_total += item["valor_total"]
+            elif item["quantidade"] == 0:
+                itens_sem_estoque += 1
             print(f'{item["id_item"]:<10}'
                   f'{item["nome"]:<50}'
                   f'{item["un_med"]:<10}'
@@ -175,7 +178,11 @@ def interface_relatorio_estoque(arquivo_itens, arquivo_movimentacoes):
             elif item['status'] == 'SEM ESTOQUE':
                 print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
         separador()
-        resumo = f'{cores["negrito"]}Quantidade de itens: {cores["limpa"]}{qtd_itens} | {cores["negrito"]}Valor total estoque:{cores["limpa"]} {formatar_para_real(valor_estoque_total)}'
+        resumo = (
+            f'{cores["negrito"]}Quantidade de itens cadastrados: {cores["limpa"]}{qtd_itens} | '
+            f'{cores["negrito"]}Quantidade de itens disponíveis: {cores["limpa"]}{qtd_itens - itens_sem_estoque} | '
+            f'{cores["negrito"]}Valor total estoque:{cores["limpa"]} {formatar_para_real(valor_estoque_total)}'
+        )
         print(resumo.center(130))
         separador()
     else:
@@ -196,7 +203,7 @@ def cabecalho_relatorio_movimentacoes():
     separador()
 
 
-def interface_relatorio_movimentacoes(arquivo_itens, arquivo_movimentacoes):
+def interface_historico_movimentacoes(arquivo_itens, arquivo_movimentacoes):
     dados = ler_arquivo_itens(arquivo_itens)
     if dados:
         item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
@@ -243,3 +250,37 @@ def interface_relatorio_movimentacoes(arquivo_itens, arquivo_movimentacoes):
         separador()
     else:
         msg_alerta('Não existem itens cadastrados.')
+
+def interface_relatorio_estoque_minimo(arquivo_itens, arquivo_movimentacoes):
+    estoque = dados_estoque(arquivo_itens, arquivo_movimentacoes)
+    qtd_itens = 0
+    qtd_itens_sem_estoque = 0
+    qtd_itens_reposição = 0
+    estoque.sort(key=lambda item: item['nome'])
+    cabecalho_relatorio_estoque()
+    for item in estoque:
+        if item['quantidade'] <= item['estoque_minimo'] + (item['estoque_minimo'] * 20 / 100):
+            qtd_itens += 1
+            print(f'{item["id_item"]:<10}'
+                  f'{item["nome"]:<50}'
+                  f'{item["un_med"]:<10}'
+                  f'{item["quantidade"]:<10}'
+                  f'{item["estoque_minimo"]:<10}'
+                  f'{formatar_para_real(item["preco_un"]):<15}'
+                  f'{formatar_para_real(item["valor_total"]):<15}', end='')
+            if item['status'] == 'REPOSIÇÃO':
+                qtd_itens_reposição += 1
+                print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
+            elif item['status'] == 'ATENÇÃO':
+                print(f'{cores["am"]}{item["status"]:<10}{cores["limpa"]}')
+            elif item['status'] == 'SEM ESTOQUE':
+                qtd_itens_sem_estoque += 1
+                print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
+    separador()
+    resumo = (
+        f'{cores["negrito"]}Itens listados: {cores["limpa"]}{qtd_itens} | '
+        f'{cores["negrito"]}Sem estoque: {cores["limpa"]}{qtd_itens_sem_estoque} | '
+        f'{cores["negrito"]}Para reposição: {cores["limpa"]}{qtd_itens_reposição} '
+    )
+    print(resumo.center(130))
+    separador()

@@ -86,6 +86,7 @@ def formatar_para_real(valor):
     valor_formatado = f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
     return valor_formatado
 
+
 def buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, id_item):
     estoque = dados_estoque(arquivo_itens, arquivo_movimentacoes)
     quantidade_estoque_item = 0
