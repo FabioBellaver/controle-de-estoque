@@ -3,9 +3,9 @@ from datetime import datetime
 from lib.arquivos import ler_arquivo_itens
 from lib.cores import cores
 from lib.dados import cadastrar_item, registrar_entrada, registrar_saida, dados_estoque, dados_movimentacoes
-from lib.msgs import msg_sucesso, msg_alerta
+from lib.msgs import msg_sucesso, msg_alerta, msg_erro
 from lib.uteis import gerar_id, validar_nome_item, validar_opcao, validar_numeros_inteiros, validar_valor, buscar_id, \
-    formatar_para_real
+    formatar_para_real, buscar_qtd_estoque_id
 
 
 def titulo_app(txt):
@@ -103,7 +103,16 @@ def interface_registrar_saida(arquivo_itens, arquivo_movimentacoes=''):
         id_registro = gerar_id()
         item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
         tipo = 'SAIDA'
-        quantidade = validar_numeros_inteiros(f'Digite a quantidade entregue: ')
+        qtd_estoque_e_nome = buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, item_id)
+        qtd_estoque = qtd_estoque_e_nome[0]
+        nome = qtd_estoque_e_nome[1]
+        while True:
+            quantidade = validar_numeros_inteiros(f'Digite a quantidade entregue: ')
+            valido = 0 < quantidade <= qtd_estoque
+            if valido:
+                break
+            elif quantidade > qtd_estoque:
+                msg_erro(f'Não é possível registrar saída maior que estoque {nome} atual.| QTD ESTOQUE: {qtd_estoque}')
         setores = ['RECURSOS HUMANOS', 'FINANCEIRO', 'JURIDICO', 'LOGISTICA', 'RECEPCAO', 'SUPORTE TECNICO']
         menu(setores, 'Selecione o setor requisitante')
         opcao = validar_opcao(6)
