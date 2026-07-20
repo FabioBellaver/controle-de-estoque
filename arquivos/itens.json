@@ -1,0 +1,298 @@
+[
+    {
+        "id": "A1B2C3D4",
+        "nome": "CADERNO UNIVERSITARIO 10 MATERIAS",
+        "un_med": "PC",
+        "estoque_minimo": 5,
+        "preco": 22.9,
+        "data_de_cadastro": "20/05/2026"
+    },
+    {
+        "id": "E5F6G7H8",
+        "nome": "BOBINA DE PAPEL TERMICO 80MM",
+        "un_med": "CX",
+        "estoque_minimo": 10,
+        "preco": 89.9,
+        "data_de_cadastro": "22/05/2026"
+    },
+    {
+        "id": "I9J0K1L2",
+        "nome": "DESINFETANTE CONCENTRADO 5L",
+        "un_med": "LT",
+        "estoque_minimo": 4,
+        "preco": 34.5,
+        "data_de_cadastro": "25/05/2026"
+    },
+    {
+        "id": "M3N4O5P6",
+        "nome": "CANETA DESTAQUE TEXTO AMARELA",
+        "un_med": "CX",
+        "estoque_minimo": 6,
+        "preco": 24.0,
+        "data_de_cadastro": "01/06/2026"
+    },
+    {
+        "id": "Q7R8S9T0",
+        "nome": "BLOCO DE NOTAS AUTOADESIVAS",
+        "un_med": "PC",
+        "estoque_minimo": 12,
+        "preco": 4.5,
+        "data_de_cadastro": "03/06/2026"
+    },
+    {
+        "id": "U1V2W3X4",
+        "nome": "COPO PLASTICO CAFE 50ML",
+        "un_med": "CX",
+        "estoque_minimo": 8,
+        "preco": 65.0,
+        "data_de_cadastro": "10/06/2026"
+    },
+    {
+        "id": "Y5Z6A7B8",
+        "nome": "ORGANIZADOR DE DOCUMENTOS DE MESA",
+        "un_med": "PC",
+        "estoque_minimo": 3,
+        "preco": 45.9,
+        "data_de_cadastro": "15/06/2026"
+    },
+    {
+        "id": "C9D0E1F2",
+        "nome": "SABONETE LIQUIDO ERVA DOCE 5L",
+        "un_med": "LT",
+        "estoque_minimo": 5,
+        "preco": 42.0,
+        "data_de_cadastro": "20/06/2026"
+    },
+    {
+        "id": "G3H4I5J6",
+        "nome": "PROLONGADOR ELETRICO 5 METROS",
+        "un_med": "MT",
+        "estoque_minimo": 4,
+        "preco": 29.9,
+        "data_de_cadastro": "25/06/2026"
+    },
+    {
+        "id": "K7L8M9N0",
+        "nome": "ORGANIZADOR DE CABOS VELCRO",
+        "un_med": "MT",
+        "estoque_minimo": 15,
+        "preco": 12.5,
+        "data_de_cadastro": "28/06/2026"
+    },
+    {
+        "id": "O1P2Q3R4",
+        "nome": "SACO DE LIXO 100 LITROS REFORCADO",
+        "un_med": "KG",
+        "estoque_minimo": 10,
+        "preco": 38.0,
+        "data_de_cadastro": "02/07/2026"
+    },
+    {
+        "id": "S5T6U7V8",
+        "nome": "PASTA DE PLASTICO COM ELASTICO A4",
+        "un_med": "PC",
+        "estoque_minimo": 20,
+        "preco": 3.8,
+        "data_de_cadastro": "05/07/2026"
+    },
+    {
+        "id": "W9X0Y1Z2",
+        "nome": "PERFURADOR DE PAPEL 2 FUROS",
+        "un_med": "PC",
+        "estoque_minimo": 3,
+        "preco": 39.9,
+        "data_de_cadastro": "22/05/2026"
+    },
+    {
+        "id": "A3B4C5D6",
+        "nome": "ALFINETE PARA MAPA COLORIDO",
+        "un_med": "CX",
+        "estoque_minimo": 5,
+        "preco": 7.2,
+        "data_de_cadastro": "28/05/2026"
+    },
+    {
+        "id": "E7F8G9H0",
+        "nome": "FITA CRIPE 24MM X 50M",
+        "un_med": "MT",
+        "estoque_minimo": 15,
+        "preco": 9.5,
+        "data_de_cadastro": "02/06/2026"
+    },
+    {
+        "id": "I1J2K3L4",
+        "nome": "DETERGENTE LIQUIDO MACA 500ML",
+        "un_med": "LT",
+        "estoque_minimo": 12,
+        "preco": 3.95,
+        "data_de_cadastro": "10/06/2026"
+    },
+    {
+        "id": "M5N6O7P8",
+        "nome": "ESPONJA DE LIMPEZA DUPLA FACE",
+        "un_med": "PC",
+        "estoque_minimo": 25,
+        "preco": 2.5,
+        "data_de_cadastro": "15/06/2026"
+    },
+    {
+        "id": "Q9R0S1T2",
+        "nome": "PILHA ALCALINA AAA PALITO",
+        "un_med": "CX",
+        "estoque_minimo": 8,
+        "preco": 31.2,
+        "data_de_cadastro": "18/06/2026"
+    },
+    {
+        "id": "U3V4W5X6",
+        "nome": "ENVELOPE PARDO CORREIO A4",
+        "un_med": "CX",
+        "estoque_minimo": 10,
+        "preco": 45.0,
+        "data_de_cadastro": "20/05/2026"
+    },
+    {
+        "id": "Y7Z8A9B0",
+        "nome": "TESOURA PROFISSIONAL INOX",
+        "un_med": "PC",
+        "estoque_minimo": 4,
+        "preco": 18.5,
+        "data_de_cadastro": "22/05/2026"
+    },
+    {
+        "id": "C1D2E3F4",
+        "nome": "REFIZ DE COLA QUENTE GROSSA",
+        "un_med": "KG",
+        "estoque_minimo": 2,
+        "preco": 55.0,
+        "data_de_cadastro": "26/05/2026"
+    },
+    {
+        "id": "G5H6I7J8",
+        "nome": "REGUA DE ALUMINIO 30CM",
+        "un_med": "PC",
+        "estoque_minimo": 8,
+        "preco": 6.8,
+        "data_de_cadastro": "01/06/2026"
+    },
+    {
+        "id": "K9L0M1N2",
+        "nome": "TINTA PARA CARIMBO PRETA",
+        "un_med": "LT",
+        "estoque_minimo": 3,
+        "preco": 14.9,
+        "data_de_cadastro": "03/06/2026"
+    },
+    {
+        "id": "O3P4Q5R6",
+        "nome": "ALMOFADA PARA CARIMBO N3",
+        "un_med": "PC",
+        "estoque_minimo": 5,
+        "preco": 12.0,
+        "data_de_cadastro": "05/06/2026"
+    },
+    {
+        "id": "S7T8U9V0",
+        "nome": "DISPENSER PARA COPO DESCARTAVEL",
+        "un_med": "PC",
+        "estoque_minimo": 2,
+        "preco": 34.9,
+        "data_de_cadastro": "12/06/2026"
+    },
+    {
+        "id": "W1X2Y3Z4",
+        "nome": "SABAO EM PO REFORCADO 5KG",
+        "un_med": "KG",
+        "estoque_minimo": 6,
+        "preco": 49.9,
+        "data_de_cadastro": "16/06/2026"
+    },
+    {
+        "id": "A5B6C7D8",
+        "nome": "FLANELA DE ALGODAO LARANJA",
+        "un_med": "PC",
+        "estoque_minimo": 20,
+        "preco": 2.2,
+        "data_de_cadastro": "20/06/2026"
+    },
+    {
+        "id": "E9F0G1H2",
+        "nome": "MANGUEIRA DE JARDIM TRANÇADA",
+        "un_med": "MT",
+        "estoque_minimo": 25,
+        "preco": 5.5,
+        "data_de_cadastro": "22/06/2026"
+    },
+    {
+        "id": "I3J4K5L6",
+        "nome": "FITA ISOLANTE PRETA 20M",
+        "un_med": "MT",
+        "estoque_minimo": 30,
+        "preco": 8.9,
+        "data_de_cadastro": "25/06/2026"
+    },
+    {
+        "id": "M7N8O9P0",
+        "nome": "BALDE PLASTICO REFORCADO 15L",
+        "un_med": "PC",
+        "estoque_minimo": 5,
+        "preco": 16.5,
+        "data_de_cadastro": "28/06/2026"
+    },
+    {
+        "id": "Q1R2S3T4",
+        "nome": "VASSOURA DE NYLON COM CABO",
+        "un_med": "PC",
+        "estoque_minimo": 6,
+        "preco": 14.8,
+        "data_de_cadastro": "01/07/2026"
+    },
+    {
+        "id": "U5V6W7X8",
+        "nome": "PANO DE PRATO ALVEJADO",
+        "un_med": "PC",
+        "estoque_minimo": 15,
+        "preco": 4.1,
+        "data_de_cadastro": "04/07/2026"
+    },
+    {
+        "id": "Y9Z0A1B2",
+        "nome": "LUVA DE PROCEDIMENTO LATEX M",
+        "un_med": "CX",
+        "estoque_minimo": 8,
+        "preco": 42.0,
+        "data_de_cadastro": "06/07/2026"
+    },
+    {
+        "id": "C3D4E5F6",
+        "nome": "ETIQUETA ADESIVA A4 REPROGRAF",
+        "un_med": "CX",
+        "estoque_minimo": 5,
+        "preco": 73.5,
+        "data_de_cadastro": "10/07/2026"
+    },
+    {
+        "id": "G7H8I9J0",
+        "nome": "CRONOMETRO DIGITAL DE MESA",
+        "un_med": "PC",
+        "estoque_minimo": 3,
+        "preco": 28.9,
+        "data_de_cadastro": "12/07/2026"
+    },
+    {
+        "id": "SRN2CC95",
+        "nome": "SABONETE LIQUIDO ERVA VERDE 5L",
+        "un_med": "LT",
+        "estoque_minimo": 5,
+        "preco": 42.0,
+        "data_de_cadastro": "19/07/2026"
+    },
+    {
+        "id": "Y4FA6YLV",
+        "nome": "LIMPA VIDROS 600ML",
+        "un_med": "CX",
+        "estoque_minimo": 2,
+        "preco": 42.99,
+        "data_de_cadastro": "19/07/2026"
+    }
+]

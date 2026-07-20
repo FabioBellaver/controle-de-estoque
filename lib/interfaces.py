@@ -5,7 +5,7 @@ from lib.cores import cores
 from lib.dados import cadastrar_item, registrar_entrada, registrar_saida, dados_estoque, dados_movimentacoes
 from lib.msgs import msg_sucesso, msg_alerta, msg_erro
 from lib.uteis import gerar_id, validar_nome_item, validar_opcao, validar_numeros_inteiros, validar_valor, buscar_id, \
-    formatar_para_real, buscar_qtd_estoque_id, gerar_id_mov
+    formatar_para_real, buscar_qtd_estoque_id, gerar_id_mov, contar_setores
 
 
 def titulo_app(txt):
@@ -52,19 +52,15 @@ def menu(opcoes, txt):
 
 def interface_cadastrar_item(nome_arquivo):
     dados = ler_arquivo_itens(nome_arquivo)
-    item_id = gerar_id()
     while True:
+        nome_valido = True
         item_nome = validar_nome_item('Digite o nome do item: ')
-        produto_ja_cadastrado_id = ''
-        nome_invalido = False
         for item in dados:
-            if item_nome == item['nome']:
-                produto_ja_cadastrado_id = item['id']
-                nome_invalido = True
-                msg_erro(f'Produto "{item_nome}" já cadastrado com ID: {produto_ja_cadastrado_id}')
-        if not nome_invalido:
+            if item['nome'] == item_nome:
+                nome_valido = False
+        msg_erro(f'Produto "{item_nome}" já cadastrado.')
+        if nome_valido:
             break
-
     unidades_de_medida = ['PC', 'KG', 'LT', 'MT', 'CX']
     menu(unidades_de_medida, 'Selecione a unidade de medida')
     opcao = validar_opcao(5)
@@ -73,6 +69,7 @@ def interface_cadastrar_item(nome_arquivo):
     estoque_minimo = validar_numeros_inteiros(f'Digite o estoque minimo do "{item_nome}": ')
     item_preco = validar_valor(f'Digite o valor para cada {item_un_med}: ')
     item_data_de_cadastro = datetime.today().strftime('%d/%m/%Y')
+    item_id = gerar_id()
     dados_item = {
         'id': item_id,
         'nome': item_nome,
@@ -109,7 +106,13 @@ def interface_registrar_entrada(arquivo_itens, arquivo_movimentacoes):
         }
         registrar_entrada(arquivo_movimentacoes, dados_entrada)
         separador()
+        dados_item = buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, item_id)
         msg_sucesso(f'Registro ID "{dados_entrada["id"]}" finalizado!')
+        resumo = (f'{cores["negrito"]}Produto: {cores["limpa"]}{dados_item[1]} | '
+                  f'{cores["negrito"]}Quantidade entrada: {cores["limpa"]}{dados_entrada["quantidade"]} | '
+                  f'{cores["negrito"]}Saldo atualizado: {cores["limpa"]}{dados_item[0]}'
+                  )
+        print(resumo.center(130))
         separador()
     else:
         msg_alerta('Não existem itens cadastrados. Não é possível registrar uma entrada.')
@@ -129,6 +132,8 @@ def interface_registrar_saida(arquivo_itens, arquivo_movimentacoes=''):
             valido = 0 < quantidade <= qtd_estoque
             if valido:
                 break
+            elif quantidade == 0:
+                msg_erro('Quantidade não pode ser zero.')
             elif quantidade > qtd_estoque:
                 msg_erro(f'Não é possível registrar saída maior que estoque {nome} atual.| QTD ESTOQUE: {qtd_estoque}')
         setores = ['RECURSOS HUMANOS', 'FINANCEIRO', 'JURIDICO', 'LOGISTICA', 'RECEPCAO', 'SUPORTE TECNICO']
@@ -146,7 +151,14 @@ def interface_registrar_saida(arquivo_itens, arquivo_movimentacoes=''):
         }
         registrar_saida(arquivo_movimentacoes, dados_saida)
         separador()
+        dados_item = buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, item_id)
         msg_sucesso(f'Registro ID "{dados_saida["id"]}" finalizado!')
+        resumo = (f'{cores["negrito"]}Produto: {cores["limpa"]}{dados_item[1]} | '
+                  f'{cores["negrito"]}Quantidade saída: {cores["limpa"]}{dados_saida["quantidade"]} | '
+                  f'{cores["negrito"]}Setor: {cores["limpa"]}{dados_saida["setor_requisitante"]} | '
+                  f'{cores["negrito"]}Saldo atualizado: {cores["limpa"]}{dados_item[0]}'
+                  )
+        print(resumo.center(130))
         separador()
     else:
         msg_alerta('Não existem itens cadastrados. Não é possível registrar uma entrada.')
@@ -227,48 +239,53 @@ def interface_historico_movimentacoes(arquivo_itens, arquivo_movimentacoes):
     dados = ler_arquivo_itens(arquivo_itens)
     if dados:
         item_id = buscar_id(arquivo_itens, 'Digite o ID do item: ')
-        relatorio = dados_movimentacoes(arquivo_itens, arquivo_movimentacoes)
-        relatorio.sort(key=lambda item: datetime.strptime(item['data'], '%d/%m/%Y'), reverse=True)
-        total_mov = 0
-        total_entradas = 0
-        total_saidas = 0
-        qtd_estoque = 0
-        titulo(f'Histórico de movimentação ID {item_id}')
-        cabecalho_relatorio_movimentacoes()
-        for movimento in relatorio:
-            if movimento['id_item'] == item_id:
-                total_mov += 1
-                tipo = ''
-                quantidade = ''
-                if movimento['tipo'] == 'ENTRADA':
-                    total_entradas += 1
-                    qtd_estoque += movimento['quantidade']
-                    txt_tipo = f'{movimento["tipo"]:<10}'
-                    tipo = f'{cores["vd"]}{txt_tipo}{cores["limpa"]}'
-                    txt_qtd = f'{movimento["quantidade"]:<10}'
-                    quantidade = f'{cores["vd"]}{txt_qtd}{cores["limpa"]}'
-                elif movimento['tipo'] == 'SAIDA':
-                    total_saidas += 1
-                    qtd_estoque -= movimento['quantidade']
-                    txt_tipo = f'{movimento["tipo"]:<10}'
-                    tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
-                    txt_qtd = f'-{movimento["quantidade"]:<9}'
-                    quantidade = f'{cores["vm"]}{txt_qtd}{cores["limpa"]}'
-                print(f'{movimento["id_movimento"]:<12}'
-                      f'{tipo}'
-                      f'{movimento["id_item"]:<12}'
-                      f'{movimento["nome"]:<40}'
-                      f'{movimento["un_med"]:<8}'
-                      f'{quantidade}'
-                      f'{movimento["data"]:<15}'
-                      f'{movimento["setor_requisitante"]:<20}')
-        separador()
-        resumo = (f'{cores["negrito"]}Total de operações: {cores["limpa"]}{total_mov} | '
-                  f'{cores["negrito"]}Total de entradas: {cores["limpa"]}{total_entradas} | '
-                  f'{cores["negrito"]}Total de saídas: {cores["limpa"]}{total_saidas} | '
-                  f'{cores["negrito"]}Saldo atual: {cores["limpa"]}{qtd_estoque}')
-        print(resumo.center(130))
-        separador()
+        qtd_est_item = buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, item_id)
+        if qtd_est_item[0] == 0:
+            separador()
+            msg_alerta(f'Não existem movimentações para o item "{qtd_est_item[1]}".')
+        else:
+            relatorio = dados_movimentacoes(arquivo_itens, arquivo_movimentacoes)
+            relatorio.sort(key=lambda item: datetime.strptime(item['data'], '%d/%m/%Y'), reverse=True)
+            total_mov = 0
+            total_entradas = 0
+            total_saidas = 0
+            qtd_estoque = 0
+            titulo(f'Histórico de movimentação ID {item_id}')
+            cabecalho_relatorio_movimentacoes()
+            for movimento in relatorio:
+                if movimento['id_item'] == item_id:
+                    total_mov += 1
+                    tipo = ''
+                    quantidade = ''
+                    if movimento['tipo'] == 'ENTRADA':
+                        total_entradas += 1
+                        qtd_estoque += movimento['quantidade']
+                        txt_tipo = f'{movimento["tipo"]:<10}'
+                        tipo = f'{cores["vd"]}{txt_tipo}{cores["limpa"]}'
+                        txt_qtd = f'{movimento["quantidade"]:<10}'
+                        quantidade = f'{cores["vd"]}{txt_qtd}{cores["limpa"]}'
+                    elif movimento['tipo'] == 'SAIDA':
+                        total_saidas += 1
+                        qtd_estoque -= movimento['quantidade']
+                        txt_tipo = f'{movimento["tipo"]:<10}'
+                        tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
+                        txt_qtd = f'-{movimento["quantidade"]:<9}'
+                        quantidade = f'{cores["vm"]}{txt_qtd}{cores["limpa"]}'
+                    print(f'{movimento["id_movimento"]:<12}'
+                          f'{tipo}'
+                          f'{movimento["id_item"]:<12}'
+                          f'{movimento["nome"]:<40}'
+                          f'{movimento["un_med"]:<8}'
+                          f'{quantidade}'
+                          f'{movimento["data"]:<15}'
+                          f'{movimento["setor_requisitante"]:<20}')
+            separador()
+            resumo = (f'{cores["negrito"]}Total de operações: {cores["limpa"]}{total_mov} | '
+                      f'{cores["negrito"]}Total de entradas: {cores["limpa"]}{total_entradas} | '
+                      f'{cores["negrito"]}Total de saídas: {cores["limpa"]}{total_saidas} | '
+                      f'{cores["negrito"]}Saldo atual: {cores["limpa"]}{qtd_estoque}')
+            print(resumo.center(130))
+            separador()
     else:
         msg_alerta('Não existem itens cadastrados.')
 
@@ -281,8 +298,10 @@ def interface_relatorio_estoque_minimo(arquivo_itens, arquivo_movimentacoes):
         qtd_itens_reposição = 0
         dados.sort(key=lambda item: item['nome'])
         cabecalho_relatorio_estoque()
+        sem_itens_estoque_min = True
         for item in dados:
             if item['quantidade'] <= item['estoque_minimo'] + (item['estoque_minimo'] * 20 / 100):
+                sem_itens_estoque_min = False
                 qtd_itens += 1
                 print(f'{item["id_item"]:<10}'
                       f'{item["nome"]:<50}'
@@ -299,26 +318,44 @@ def interface_relatorio_estoque_minimo(arquivo_itens, arquivo_movimentacoes):
                 elif item['status'] == 'SEM ESTOQUE':
                     qtd_itens_sem_estoque += 1
                     print(f'{cores["vm"]}{item["status"]:<10}{cores["limpa"]}')
-        separador()
-        resumo = (
-            f'{cores["negrito"]}Itens listados: {cores["limpa"]}{qtd_itens} | '
-            f'{cores["negrito"]}Sem estoque: {cores["limpa"]}{qtd_itens_sem_estoque} | '
-            f'{cores["negrito"]}Para reposição: {cores["limpa"]}{qtd_itens_reposição} '
-        )
-        print(resumo.center(130))
-        separador()
+        if sem_itens_estoque_min:
+            msg_alerta('Nenhum item abaixo do mínimo.')
+            separador()
+        elif not sem_itens_estoque_min:
+            separador()
+            resumo = (
+                f'{cores["negrito"]}Itens listados: {cores["limpa"]}{qtd_itens} | '
+                f'{cores["negrito"]}Sem estoque: {cores["limpa"]}{qtd_itens_sem_estoque} | '
+                f'{cores["negrito"]}Para reposição: {cores["limpa"]}{qtd_itens_reposição} '
+            )
+            print(resumo.center(130))
+            separador()
     else:
         msg_alerta('Não existem itens cadastrados.')
 
 
-def interface_relatorio_por_consumo(nome_arquivo, arquivo_movimentacoes):
-    dados = dados_movimentacoes(nome_arquivo, arquivo_movimentacoes)
+def interface_relatorio_por_consumo(arquivo_itens, arquivo_movimentacoes):
+    dados = dados_movimentacoes(arquivo_itens, arquivo_movimentacoes)
+    qtd_por_setor = contar_setores(arquivo_itens, arquivo_movimentacoes)
     if dados:
         dados.sort(key=lambda item: datetime.strptime(item['data'], '%d/%m/%Y'), reverse=True)
-        setores = ['RECURSOS HUMANOS', 'FINANCEIRO', 'JURIDICO', 'LOGISTICA', 'RECEPCAO', 'SUPORTE TECNICO']
+        setores = [f'RECURSOS HUMANOS ( {qtd_por_setor["RECURSOS HUMANOS"]} )',
+                   f'FINANCEIRO ( {qtd_por_setor["FINANCEIRO"]} )',
+                   f'JURIDICO ( {qtd_por_setor["JURIDICO"]} )',
+                   f'LOGISTICA ( {qtd_por_setor["LOGISTICA"]} )',
+                   f'RECEPCAO ( {qtd_por_setor["RECEPCAO"]} )',
+                   f'SUPORTE TECNICO ( {qtd_por_setor["SUPORTE TECNICO"]} )']
         menu(setores, 'Selecione o setor requisitante')
         opcao = validar_opcao(6)
-        setor_relatorio = setores[opcao - 1]
+        setores_relatorio = [
+            'RECURSOS HUMANOS',
+            'FINANCEIRO',
+            'JURIDICO',
+            'LOGISTICA',
+            'RECEPCAO',
+            'SUPORTE TECNICO'
+        ]
+        setor_relatorio = setores_relatorio[opcao - 1]
         total_mov = 0
         titulo(f'Relatorio do setor: {setor_relatorio}')
         cabecalho_relatorio_movimentacoes()

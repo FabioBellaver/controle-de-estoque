@@ -80,19 +80,15 @@ def validar_valor(msg):
 def buscar_id(nome_arquivo, msg):
     itens = ler_arquivo_itens(nome_arquivo)
     while True:
-        id_encontrado = False
         entrada_id = input(msg).strip().upper()
         if entrada_id == '':
             msg_erro('ID inválido.')
-        elif len(entrada_id) > 8 or len(entrada_id) < 8:
+        elif len(entrada_id) != 8:
             msg_erro('IDs tem 8 caracteres apenas.')
         else:
             for item in itens:
                 if item["id"] == entrada_id:
-                    msg_sucesso(f'ID "{item["id"]}" encontrado.')
-                    id_encontrado = True
                     return entrada_id
-        if not id_encontrado:
             msg_erro(f'ID {entrada_id} não foi encontrado.')
 
 
@@ -111,3 +107,16 @@ def buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, id_item):
             nome_item = item["nome"]
             break
     return [quantidade_estoque_item, nome_item]
+
+
+def contar_setores(arquivo_itens, arquivo_movimentacoes):
+    dados = dados_movimentacoes(arquivo_itens, arquivo_movimentacoes)
+    setores = {}
+    for item in dados:
+        setor = item['setor_requisitante']
+        if setor != 'N/A':
+            if setor in setores:
+                setores[setor] += 1
+            else:
+                setores[setor] = 1
+    return setores
