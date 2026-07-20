@@ -59,6 +59,7 @@ def validar_numeros_inteiros(msg):
             valor = int(input(msg))
             if valor < 0:
                 msg_erro(f'Valor inválido.')
+                continue
             return valor
         except ValueError:
             msg_erro('Digite um número inteiro válido (apenas números).')
@@ -111,7 +112,14 @@ def buscar_qtd_estoque_id(arquivo_itens, arquivo_movimentacoes, id_item):
 
 def contar_setores(arquivo_itens, arquivo_movimentacoes):
     dados = dados_movimentacoes(arquivo_itens, arquivo_movimentacoes)
-    setores = {}
+    setores = {
+        "SUPORTE TECNICO": 0,
+        "FINANCEIRO": 0,
+        "JURIDICO": 0,
+        "RECEPCAO": 0,
+        "LOGISTICA": 0,
+        "RECURSOS HUMANOS": 0
+    }
     for item in dados:
         setor = item['setor_requisitante']
         if setor != 'N/A':

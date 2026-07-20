@@ -58,7 +58,7 @@ def interface_cadastrar_item(nome_arquivo):
         for item in dados:
             if item['nome'] == item_nome:
                 nome_valido = False
-        msg_erro(f'Produto "{item_nome}" já cadastrado.')
+                msg_erro(f'Produto "{item_nome}" já cadastrado.')
         if nome_valido:
             break
     unidades_de_medida = ['PC', 'KG', 'LT', 'MT', 'CX']
@@ -190,9 +190,9 @@ def interface_relatorio_estoque(arquivo_itens, arquivo_movimentacoes):
         valor_estoque_total = 0
         cabecalho_relatorio_estoque()
         for item in relatorio:
-            if item["valor_total"]:
+            if item["quantidade"] > 0:
                 valor_estoque_total += item["valor_total"]
-            elif item["quantidade"] == 0:
+            else:
                 itens_sem_estoque += 1
             print(f'{item["id_item"]:<10}'
                   f'{item["nome"]:<50}'
@@ -362,7 +362,12 @@ def interface_relatorio_por_consumo(arquivo_itens, arquivo_movimentacoes):
         for item in dados:
             if item['setor_requisitante'] == setor_relatorio:
                 total_mov += 1
-                if item['tipo'] == 'SAIDA':
+                if item['tipo'] == 'ENTRADA':
+                    txt_tipo = f'{item["tipo"]:<10}'
+                    tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
+                    txt_qtd = f'-{item["quantidade"]:<9}'
+                    quantidade = f'{cores["vm"]}{txt_qtd}{cores["limpa"]}'
+                elif item['tipo'] == 'SAIDA':
                     txt_tipo = f'{item["tipo"]:<10}'
                     tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
                     txt_qtd = f'-{item["quantidade"]:<9}'
