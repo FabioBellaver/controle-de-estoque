@@ -364,9 +364,9 @@ def interface_relatorio_por_consumo(arquivo_itens, arquivo_movimentacoes):
                 total_mov += 1
                 if item['tipo'] == 'ENTRADA':
                     txt_tipo = f'{item["tipo"]:<10}'
-                    tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
-                    txt_qtd = f'-{item["quantidade"]:<9}'
-                    quantidade = f'{cores["vm"]}{txt_qtd}{cores["limpa"]}'
+                    tipo = f'{cores["vd"]}{txt_tipo}{cores["limpa"]}'
+                    txt_qtd = f'{item["quantidade"]:<9}'
+                    quantidade = f'{cores["vd"]}{txt_qtd}{cores["limpa"]}'
                 elif item['tipo'] == 'SAIDA':
                     txt_tipo = f'{item["tipo"]:<10}'
                     tipo = f'{cores["vm"]}{txt_tipo}{cores["limpa"]}'
