@@ -2,7 +2,7 @@
 
 Um sistema em Python para controle de estoque por movimentação (entradas e saídas), com dois arquivos JSON relacionados como banco de dados.
 
-## Features
+## Funcionalidades
 
 - Cadastrar itens, com estoque mínimo
 - Registrar entradas e saídas de estoque (a quantidade atual é sempre calculada a partir do histórico, nunca armazenada fixa)
@@ -11,13 +11,13 @@ Um sistema em Python para controle de estoque por movimentação (entradas e sa�
 - Ver histórico de movimentação de um item
 - Gerar relatório de consumo por setor
 
-## Technologies
+## Tecnologias
 
 - Python
 - JSON
 - nanoid
 
-## Running the Project
+## Executando o Projeto
 
 Instale a dependência necessária:
 
@@ -31,6 +31,6 @@ Execute o projeto:
 python main.py
 ```
 
-## Author
+## Autor
 
 Fabio Bellaver
